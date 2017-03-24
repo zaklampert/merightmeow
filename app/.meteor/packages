@@ -65,3 +65,5 @@ shell-server@0.2.1
 
 # security
 audit-argument-checks@1.0.7
+jnoble:multi-styl
+stylus

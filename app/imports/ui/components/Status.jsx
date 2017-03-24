@@ -1,6 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 
+import './Status.styl'
+
 export default class Status extends React.Component {
   constructor(props){
     super(props);
@@ -37,12 +39,17 @@ export default class Status extends React.Component {
     }
 
     return(
-      <div>
-
+      <div className="container-status">
         <div className="info">{user.emails[0].address}: {moment(status.createdAt).calendar()}</div>
         <img src={status.imageUrl}/>
-        <div onClick={this._showOlderStatus}>Show older</div>
-        <div onClick={this._showNewerStatus}>Show newer</div>
+        <div className="container-status-timeline">
+          <div className="button01" onClick={this._showOlderStatus}>
+            <span className="label">Past</span>
+          </div>
+          <div className="button01" onClick={this._showNewerStatus}>
+            <span className="label">Current</span>
+          </div>
+        </div>
       </div>
     )
   }

@@ -5,6 +5,7 @@ import {
   search
 } from '../../api/statuses/methods.js';
 
+import './Status.styl'
 
 export default class ChangeStatus extends React.Component {
 
@@ -41,7 +42,7 @@ export default class ChangeStatus extends React.Component {
   render(){
     const {searching, searchResults} = this.props;
     return (
-      <div>
+      <div className="container-status">
         <form onSubmit={this._handleSubmit} >
           <input ref="searchTerm" />
           <button type="submit">Submit</button>

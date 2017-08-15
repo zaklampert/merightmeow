@@ -4,7 +4,7 @@ import { Session } from 'meteor/session';
 import { createContainer } from 'meteor/react-meteor-data';
 import { Statuses } from '../../api/statuses/statuses.js';
 
-import Status from '../components/Status.jsx';
+import Status from '../components/Status.js';
 
 export default createContainer(() => {
   const myStatusHandle = Meteor.subscribe('statuses.me');

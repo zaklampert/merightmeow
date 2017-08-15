@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { Accounts } from 'meteor/accounts-base';
 // import i18n from 'meteor/universe:i18n';
 
-import AuthPage from './AuthPage.jsx';
+import AuthPage from './AuthPage.js';
 
 export default class JoinPage extends React.Component {
   constructor(props) {
@@ -39,8 +39,9 @@ export default class JoinPage extends React.Component {
       email,
       password,
     }, (err) => {
+      console.log(err);
       if (err) {
-        this.setState({
+        return this.setState({
           errors: { none: err.reason },
         });
       }

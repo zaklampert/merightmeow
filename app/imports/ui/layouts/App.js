@@ -3,6 +3,11 @@ import Me from '../components/Me'
 import ChangeStatus from '../components/ChangeStatus';
 
 class App extends React.Component {
+  componentWillReceiveProps(nextProps) {
+    if (!nextProps.userId) {
+      this.context.router.push('/signin');
+    }
+  }
   render() {
     const {user, groups, children, location, userId, searchResults, searching} = this.props;
     const clonedChildren = children && React.cloneElement(children, {
@@ -19,5 +24,10 @@ class App extends React.Component {
     )
   }
 }
+
+
+App.contextTypes = {
+  router: React.PropTypes.object,
+};
 
 export default App;

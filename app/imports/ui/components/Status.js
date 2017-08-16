@@ -1,8 +1,6 @@
 import React from 'react';
 import moment from 'moment';
 
-import './Status.styl';
-
 export default class Status extends React.Component {
   constructor(props) {
     super(props);
@@ -38,7 +36,7 @@ export default class Status extends React.Component {
     }
     if (status.fileType === 'mp4') {
       return (
-        <video width={status.width} height={status.height} autoPlay loop key={status.sourceUrl}>
+        <video width="100%" autoPlay loop key={status.sourceUrl}>
           <source src={status.sourceUrl} type="video/mp4" />
 
         Your browser does not support the video tag.

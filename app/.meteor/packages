@@ -21,6 +21,7 @@ less@2.7.9
 static-html@1.1.12_1
 react-meteor-data
 
+
 # data
 http@1.2.12
 mongo@1.1.19
@@ -65,6 +66,5 @@ shell-server@0.2.4
 
 # security
 audit-argument-checks@1.0.7
-jnoble:multi-styl
 stylus@2.513.9
 dynamic-import

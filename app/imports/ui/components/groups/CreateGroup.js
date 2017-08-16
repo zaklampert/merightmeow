@@ -22,8 +22,8 @@ class CreateGroup extends React.Component{
     render(){
         return (
             <div>
-                <label htmlFor="groupName">New Group</label>
-                <input id="groupName" ref={(c) => {this.groupName = c}} />
+                <label htmlFor="groupName">New Group</label><br/>
+                <input id="groupName" ref={(c) => {this.groupName = c}} placeholder="only-lowercase-allowed"/>
                 <div onClick={this._createGroup}>Go</div>
             </div>
         )

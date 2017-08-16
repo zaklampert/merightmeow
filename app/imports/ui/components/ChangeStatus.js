@@ -5,8 +5,6 @@ import {
   search,
 } from '../../api/statuses/methods.js';
 
-import './Status.styl'
-
 export default class ChangeStatus extends React.Component {
 
   constructor(props){
@@ -48,7 +46,7 @@ export default class ChangeStatus extends React.Component {
     return (
       <div className="container-status">
         <form onSubmit={this._handleSubmit} >
-          <input ref="searchTerm" />
+          <input ref="searchTerm" placeholder="Search for gif"/>
           <button type="submit">Submit</button>
         </form>
         {(searchResults && searchResults.length > 0) ?

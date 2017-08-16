@@ -27,7 +27,7 @@ class AddUserToGroup extends React.Component {
     render(){
         return (
             <div>
-                <input ref={(c)=>{this.email = c}} />
+                <input ref={(c)=>{this.email = c}} placeholder="Add user by email" />
                 <div onClick={this._addUser} >Add</div>
             </div>
         );

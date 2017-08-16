@@ -1,5 +1,8 @@
 import React from 'react';
-import { Menu, Icon } from 'antd';
+import Icon from 'antd/lib/icon';
+import Menu from 'antd/lib/menu';
+import 'antd/lib/icon/style';
+import 'antd/lib/menu/style';
 
 class GroupsList extends React.Component{
     constructor(props){

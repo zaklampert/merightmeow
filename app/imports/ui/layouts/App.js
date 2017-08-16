@@ -1,6 +1,10 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
-import { Layout, Menu, Icon } from 'antd';
+import Layout from 'antd/lib/layout';
+import Menu from 'antd/lib/menu';
+import 'antd/lib/layout/style';
+import 'antd/lib/menu/style';
+
 import './App.less';
 import Me from '../components/Me'
 import ChangeStatus from '../components/ChangeStatus';

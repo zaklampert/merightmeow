@@ -6,8 +6,7 @@ import { createContainer } from 'meteor/react-meteor-data';
 import App from '../layouts/App.js';
 
 export default createContainer(() => {
-  const publicHandle = Meteor.subscribe('lists.public');
-  const privateHandle = Meteor.subscribe('lists.private');
+  const usersHandle = Meteor.subscribe('users.public');
   return {
     user: Meteor.user(),
     userId: Meteor.userId(),

@@ -4,14 +4,14 @@ import { Meteor } from 'meteor/meteor';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 import { Statuses } from '../statuses.js';
+import { Groups } from '../../groups/groups.js'
 
-Meteor.publishComposite('statuses.me', function() {
-  // new SimpleSchema({
-  //   listId: { type: String },
-  // }).validate(params);
+Meteor.publishComposite('statuses.byUser', function(params) {
+  new SimpleSchema({
+    userId: { type: String },
+  }).validate(params);
 
-  // const { listId } = params;
-  const userId = this.userId;
+  const { userId } = params;
 
   return {
     find() {
@@ -23,7 +23,7 @@ Meteor.publishComposite('statuses.me', function() {
       // used to drive the child queries to get the todos
       const options = {
         sort: {createdAt: -1},
-        limit: 20
+        limit: 20,
       };
       return Statuses.find(query, options);
     },
@@ -35,3 +35,25 @@ Meteor.publishComposite('statuses.me', function() {
     // }],
   };
 });
+
+Meteor.publishComposite('statuses.byGroupName', function(params) {
+    new SimpleSchema({
+    groupName: { type: String },
+  }).validate(params);
+  const { groupName } = params;
+  return {
+    find() {
+      const query = {
+        name: groupName,
+        members: this.userId,
+      };
+      return Groups.find(query);
+    },
+    children: [{
+      find(group) {
+        return Statuses.find({ userId: { $in: group.members } });
+      }
+    }]
+  }
+});
+

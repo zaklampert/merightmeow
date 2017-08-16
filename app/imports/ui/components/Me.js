@@ -1,8 +1,12 @@
 import React from 'react'
 import {Link} from 'react-router';
-import MyStatus from '../containers/MyStatusContainer'
+import StatusContainer from '../containers/StatusContainer';
 
 class Me extends React.Component {
+  constructor(props) {
+    super(props);
+    this._renderSignedIn = this._renderSignedIn.bind(this);
+  }
   _renderSignedOut(){
     return (
       <div>
@@ -17,9 +21,10 @@ class Me extends React.Component {
     )
   }
   _renderSignedIn(){
+    const { userId } = this.props;
     return (
       <div>
-        <MyStatus />
+        <StatusContainer userId={userId} />
 
       </div>
     )

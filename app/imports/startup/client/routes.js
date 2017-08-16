@@ -10,6 +10,8 @@ import AuthPageSignIn from '../../ui/pages/AuthPageSignIn.js';
 import AuthPageJoin from '../../ui/pages/AuthPageJoin.js';
 // import NotFoundPage from '../../ui/pages/NotFoundPage.jsx';
 
+import GroupContainer from '../../ui/containers/GroupContainer.js';
+
 // i18n.setLocale('en');
 
 const isLoggedIn = (nextState, replace) => {
@@ -22,8 +24,11 @@ const isLoggedIn = (nextState, replace) => {
 
 export const renderRoutes = () => (
   <Router history={browserHistory}>
-    <Route path="/" component={AppContainer} onEnter={isLoggedIn} />
-    <Route path="signin" component={AuthPageSignIn} />
-    <Route path="join" component={AuthPageJoin} />
+    <Route path="/signin" component={AuthPageSignIn} />
+    <Route path="/join" component={AuthPageJoin} />
+    <Route path="/" component={AppContainer} onEnter={isLoggedIn} >
+      <Route path="/:groupName" component={GroupContainer} />
+    </Route>
+
   </Router>
 );

@@ -2,7 +2,7 @@ import React from 'react'
 
 import {
   create,
-  search
+  search,
 } from '../../api/statuses/methods.js';
 
 import './Status.styl'
@@ -36,7 +36,11 @@ export default class ChangeStatus extends React.Component {
   }
 
   _handleClick(resultObject){
-    create.call({imageUrl: resultObject.images.downsized.url})
+    const sourceUrl = resultObject.images.original.mp4 || resultObject.images.original.url;
+    const fileType = (resultObject.images.original.mp4) ? 'mp4' : 'gif';
+    const height = resultObject.images.original.height;
+    const width = resultObject.images.original.width;
+    create.call({ sourceUrl, fileType, height, width });
     Session.set('SEARCH_RESULTS', null);
   }
   render(){

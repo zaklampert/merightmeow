@@ -4,10 +4,11 @@ import { Meteor } from 'meteor/meteor';
 // import faker from 'faker';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
-// import incompleteCountDenormalizer from './incompleteCountDenormalizer.js';
-// import { Lists } from '../lists/lists.js';
 
-class StatusesCollection extends Mongo.Collection {
+// import incompleteCountDenormalizer from './incompleteCountDenormalizer.js';
+import { Statuses } from '../statuses/statuses.js';
+
+class GroupsCollection extends Mongo.Collection {
   insert(doc, callback) {
     const ourDoc = doc;
     ourDoc.createdAt = ourDoc.createdAt || new Date();
@@ -28,32 +29,27 @@ class StatusesCollection extends Mongo.Collection {
   }
 }
 
-export const Statuses = new StatusesCollection('statuses');
+export const Groups = new GroupsCollection('groups');
 
 // Deny all client-side updates since we will be using methods to manage this collection
-Statuses.deny({
+Groups.deny({
   insert() { return true; },
   update() { return true; },
   remove() { return true; },
 });
 
-Statuses.schema = new SimpleSchema({
-  userId: {
+Groups.schema = new SimpleSchema({
+  ownerId: {
     type: String,
     regEx: SimpleSchema.RegEx.Id,
-    denyUpdate: true,
   },
-  fileType: {
-    type: String,
+  members: {
+    type: [String],
+    regEx: SimpleSchema.RegEx.Id,
   },
-  sourceUrl: {
+  name: {
     type: String,
-  },
-  height: {
-    type: String,
-  },
-  width: {
-    type: String,
+    regEx: /^[a-z]+(-[a-z]+)*$/,
   },
   createdAt: {
     type: Date,
@@ -65,12 +61,12 @@ Statuses.schema = new SimpleSchema({
   },
 });
 
-Statuses.attachSchema(Statuses.schema);
+Groups.attachSchema(Groups.schema);
 
 // This represents the keys from Lists objects that should be published
 // to the client. If we add secret properties to List objects, don't list
 // them here to keep them private to the server.
-Statuses.publicFields = {
+Groups.publicFields = {
   // listId: 1,
   // text: 1,
   createdAt: 1,
@@ -80,15 +76,15 @@ Statuses.publicFields = {
 // TODO This factory has a name - do we have a code style for this?
 //   - usually I've used the singular, sometimes you have more than one though, like
 //   'todo', 'emptyTodo', 'checkedTodo'
-// Factory.define('todo', Todos, {
-//   listId: () => Factory.get('list'),
-//   text: () => faker.lorem.sentence(),
-//   createdAt: () => new Date(),
+// Factory.define('group', Groups, {
+// //   listId: () => Factory.get('list'),
+// //   text: () => faker.lorem.sentence(),
+// //   createdAt: () => new Date(),
 // });
-//
-Statuses.helpers({
-  user() {
-    return Meteor.users.findOne(this.userId);
-  },
 
+Groups.helpers({
+  usersInGroup() {
+      console.log(this.members);
+    return Meteor.users.find({ _id: { $in: this.members } });
+  },
 });

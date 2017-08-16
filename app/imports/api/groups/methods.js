@@ -1,23 +1,20 @@
 import { Meteor } from 'meteor/meteor';
 import { HTTP } from 'meteor/http';
-import {Session} from 'meteor/session';
+import { Session } from 'meteor/session';
 import { _ } from 'meteor/underscore';
 import { ValidatedMethod } from 'meteor/mdg:validated-method';
 import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 import { DDPRateLimiter } from 'meteor/ddp-rate-limiter';
 
-import { Statuses } from './statuses.js';
+import { Groups } from './groups.js';
 // import { Lists } from '../lists/lists.js';
 
 export const create = new ValidatedMethod({
-  name: 'statuses.create',
+  name: 'groups.create',
   validate: new SimpleSchema({
-    sourceUrl: { type: String },
-    fileType: { type: String },
-    height:  { type: String },
-    width: { type: String },
+    name: { type: String, regEx: /^[a-z]+(-[a-z]+)*$/ },
   }).validator(),
-  run({ sourceUrl, fileType, height, width }) {
+  run({ name }) {
     // const list = Lists.findOne(listId);
     //
     // if (list.isPrivate() && list.userId !== this.userId) {
@@ -25,46 +22,67 @@ export const create = new ValidatedMethod({
     //     'Cannot add todos to a private list that is not yours');
     // }
 
-    const status = {
-      userId: Meteor.userId(),
-      sourceUrl,
-      fileType,
-      height,
-      width,
+    const group = {
+      ownerId: Meteor.userId(),
+      members: [Meteor.userId()],
+      name,
       public: false,
       createdAt: new Date(),
     };
 
-    Statuses.insert(status);
+    Groups.insert(group);
   },
 });
 
-export const search = new ValidatedMethod({
-  name: 'statuses.search',
+export const addUser = new ValidatedMethod({
+  name: 'groups.addUser',
   validate: new SimpleSchema({
-    searchTerm: {type: String},
+    email: { type: String },
+    groupId: { type: String, regEx: SimpleSchema.RegEx.Id },
   }).validator(),
-  run({searchTerm}) {
-    this.unblock();
-    if (this.isSimulation) {
+  // we should add user by username, probably, though email address could be good
+  run({ email, groupId }) {
+    const group = Groups.findOne(groupId);
+    const user = Meteor.users.findOne({ 'emails.0.address': email });
+    if (!user) {
+        throw new Meteor.Error('api.groups.addUser.noUser',
+            'User does not exist');
+      }
+        // We may wan't to have access levels of people that can also add besides the group owner
+    if (!group || group.ownerId !== Meteor.userId()) {
+        throw new Meteor.Error('api.groups.addUser.accessDenied',
+            'Cannot add a user to a group that does not exist or that you are not the owner');
+      }
+      Groups.update(groupId, {$addToSet: {members: user._id}});
+  },
+});
 
-    }
-    var url = 'http://api.giphy.com/v1/gifs/search';
-    try {
-      var result = HTTP.get(url, {
-        params: {
-          q: searchTerm,
-          rating: 'pg-13',
-          limit: '50',
-          api_key: Meteor.settings.giphy_api_key
-        }
-      })
-      return result;
-    } catch(e){
-      return false;
-    }
-  }
-})
+// export const search = new ValidatedMethod({
+//   name: 'statuses.search',
+//   validate: new SimpleSchema({
+//     searchTerm: {type: String},
+//   }).validator(),
+//   run({searchTerm}) {
+//     this.unblock();
+//     if (this.isSimulation) {
+
+//     }
+//     var url = 'http://api.giphy.com/v1/gifs/search';
+//     try {
+//       var result = HTTP.get(url, {
+//         params: {
+//           q: searchTerm,
+//           rating: 'pg-13',
+//           limit: '50',
+//           api_key: Meteor.settings.giphy_api_key
+//         }
+//       })
+//       return result;
+//     } catch(e){
+//       return false;
+//     }
+//   }
+// })
 
 // export const setCheckedStatus = new ValidatedMethod({
 //   name: 'todos.makeChecked',
@@ -131,9 +149,9 @@ export const search = new ValidatedMethod({
 // });
 
 // Get list of all method names on Todos
-const STATUS_METHODS = _.pluck([
+const GROUPS_METHODS = _.pluck([
   create,
-  search,
+  addUser,
   // setCheckedStatus,
   // updateText,
   // remove,
@@ -143,7 +161,7 @@ if (Meteor.isServer) {
   // Only allow 5 todos operations per connection per second
   DDPRateLimiter.addRule({
     name(name) {
-      return _.contains(STATUS_METHODS, name);
+      return _.contains(GROUPS_METHODS, name);
     },
 
     // Rate limit per connection ID

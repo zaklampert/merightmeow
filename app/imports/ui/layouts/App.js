@@ -1,6 +1,10 @@
 import React from 'react';
+import { Meteor } from 'meteor/meteor';
+
 import Me from '../components/Me'
 import ChangeStatus from '../components/ChangeStatus';
+import Groups from '../containers/GroupsListContainer';
+import CreateGroup from '../components/groups/CreateGroup';
 
 class App extends React.Component {
   componentWillReceiveProps(nextProps) {
@@ -16,6 +20,9 @@ class App extends React.Component {
 
     return(
       <div>
+        {(userId) ? <div onClick={() => Meteor.logout((err)=>{console.log(err)})}>Logout</div> : null }
+        <Groups />
+        <CreateGroup />
         <Me me={user} userId={userId} />
         <ChangeStatus searchResults={searchResults} searching={searching}/>
         {clonedChildren}
